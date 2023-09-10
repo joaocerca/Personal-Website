@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, render_template_string, make_response
+from werkzeug import exceptions
 from ..addons import dbconnection as dbconnect
 from bokeh.layouts import column
 from bokeh.models import (ColumnDataSource, DataTable, HoverTool, IntEditor,
@@ -10,6 +11,7 @@ from bokeh.transform import factor_cmap
 from bokeh.embed import file_html, components
 from bokeh.resources import CDN
 from pandas import DatetimeIndex as dt
+
 import numpy as np
 import pandas as pd
 import csv
@@ -34,8 +36,15 @@ def show_dashboard():
 def data_plot():
 
     curdoc().theme = "dark_minimal"
+
+    try:
+        data_plot_df = dbconnect.run_query_to_df(sql="SELECT * FROM `data_plot_view`")
+    except exceptions.BadGateway:
+        dbconnect.mysql_disconnect()
+        data_plot_df = dbconnect.run_query_to_df(sql="SELECT * FROM `data_plot_view`")
+
+
     
-    data_plot_df = dbconnect.run_query_to_df(sql="SELECT * FROM `data_plot_view`")
     data_plot_df.rename(columns={'Artist':'artistname',
                                  'Country':'artistcountry',
                                  'Release Name':'releasename',
@@ -110,18 +119,8 @@ def data_plot():
     p.add_tools(rel_hover_tool)
 
     script1, (div_plot, div_table) = components((p, data_table))
-    
 
-    print(div_table)
-    print(div_plot)
-    
-    # comp = [components((p, data_table))[0], 
-    #           components((p, data_table))[1][0],
-    #           components((p, data_table))[1][0]]
-    
-    # show(column(p, data_table))
-    
     return script1, (div_plot, div_table)
-    # return 1
+
 
     
