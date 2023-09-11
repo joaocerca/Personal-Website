@@ -42,13 +42,8 @@ def open_ssh_tunnel(verbose=False):
     
 
 def mysql_connect():
-    """Connect to a MySQL server using the SSH tunnel connection
-    
-    :return connection: Global MySQL database connection
-    """
-    
-    global connection
-    
+
+    # Global connection was giving too many 502 Gateway errors in the server
     connection = pymysql.connect(
         host='127.0.0.1',
         user=database_username,
@@ -57,13 +52,10 @@ def mysql_connect():
         port=tunnel.local_bind_port
     )
 
-def run_query(sql_query, commit):
-    """Runs a given SQL query via the global database connection.
-    
-    :param sql: MySQL query
-    :return: Pandas dataframe containing results
-    """
-    
+    return connection
+
+def run_query(sql_query, commit, connection):
+
     with connection.cursor() as cursor:
 
         cursor.execute(sql_query)
@@ -75,26 +67,17 @@ def run_query(sql_query, commit):
     return result
 
 
-def run_query_to_df(sql):
-    """Runs a given SQL query via the global database connection.
-    
-    :param sql: MySQL query
-    :return: Pandas dataframe containing results
-    """
-    
+def run_query_to_df(sql, connection):
+   
     return pd.read_sql_query(sql, connection)
 
 
-def mysql_disconnect():
-    """Closes the MySQL database connection.
-    """
-    
+def mysql_disconnect(connection):
+
     connection.close()
 
 
 def close_ssh_tunnel():
-    """Closes the SSH tunnel connection.
-    """
-    
+
     tunnel.close
 

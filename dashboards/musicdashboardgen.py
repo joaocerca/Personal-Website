@@ -37,11 +37,11 @@ def data_plot():
 
     curdoc().theme = "dark_minimal"
 
-    try:
-        data_plot_df = dbconnect.run_query_to_df(sql="SELECT * FROM `data_plot_view`")
-    except exceptions.BadGateway:
-        dbconnect.mysql_disconnect()
-        data_plot_df = dbconnect.run_query_to_df(sql="SELECT * FROM `data_plot_view`")
+    cnx = dbconnect.mysql_connect()
+
+  
+    data_plot_df = dbconnect.run_query_to_df(sql="SELECT * FROM `data_plot_view`", connection=cnx)
+
 
 
     
@@ -119,6 +119,8 @@ def data_plot():
     p.add_tools(rel_hover_tool)
 
     script1, (div_plot, div_table) = components((p, data_table))
+
+    dbconnect.mysql_disconnect(cnx)
 
     return script1, (div_plot, div_table)
 
