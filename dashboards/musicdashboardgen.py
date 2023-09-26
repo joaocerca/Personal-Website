@@ -4,7 +4,7 @@ from ..addons import dbconnection as dbconnect
 from bokeh.layouts import column
 from bokeh.models import (ColumnDataSource, DataTable, HoverTool, IntEditor,
                           NumberEditor, NumberFormatter, SelectEditor,
-                          StringEditor, StringFormatter, TableColumn)
+                          StringEditor, StringFormatter, TableColumn, ImportedStyleSheet, CrosshairTool, Span)
 from bokeh.plotting import figure, show, curdoc
 from bokeh.palettes import d3
 from bokeh.transform import factor_cmap
@@ -42,8 +42,6 @@ def data_plot():
   
     data_plot_df = dbconnect.run_query_to_df(sql="SELECT * FROM `data_plot_view`", connection=cnx)
 
-
-
     
     data_plot_df.rename(columns={'Artist':'artistname',
                                  'Country':'artistcountry',
@@ -56,7 +54,7 @@ def data_plot():
     
     
     ### converts 'totalduration' column into string and then slices the '0 days' part of the string 
-    data_plot_df["totalduration"] = data_plot_df["totalduration"].astype(str).map(lambda x: x[7:])
+    data_plot_df.totalduration = data_plot_df.totalduration.astype(str).map(lambda x: x[7:])
 
 
     format_release = data_plot_df['format']
@@ -93,13 +91,17 @@ def data_plot():
     
     data_table = DataTable(source=source, columns=columns, editable=True, width=1280,
                         index_position=-1, index_header="row index", index_width=60, sizing_mode='scale_width')
+    
+
+    width = Span(dimension="width", line_dash="dotted", line_width=1)
+    height = Span(dimension="height", line_dash="dotted", line_width=1)
 
     p = figure(width=1000, height=300, tools="pan,wheel_zoom,xbox_select,reset", active_drag="xbox_select", sizing_mode='scale_width')
 
     colors = factor_cmap("format", palette=d3['Category10'][10], factors=format_type)
 
     release = p.circle(x="year", y="index", fill_color=colors , size=9, alpha=0.7, source=source)
-
+    
 
     tooltips = [
         ("Artist", "@artistname"),
@@ -116,9 +118,10 @@ def data_plot():
     rel_hover_tool = HoverTool(renderers=[release], tooltips=[*tooltips])
 
 
-    p.add_tools(rel_hover_tool)
+    p.add_tools(rel_hover_tool, CrosshairTool(overlay=[width, height]))
 
-    script1, (div_plot, div_table) = components((p, data_table))
+    
+    script1, (div_plot, div_table) = components((p, data_table), theme="dark_minimal")
 
     dbconnect.mysql_disconnect(cnx)
 

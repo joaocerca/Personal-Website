@@ -10,41 +10,102 @@
     <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{url_for('static', filename='dashboards.css') }}" rel="stylesheet" type="text/css" />
     <link rel="icon" type="image/x-icon" href="static/favicon/favicon.ico" />
 
 
     <title>Music Database Detailed Dashboard</title>
 </head>
 
-<body class="p-3 m-0 border-0 bd-example m-0 border-0 bd-example-row">
+<body class="p-3 m-0 border-0 bd-example m-0 bd-example-row min-vh-100">
 
-    <div class="container text-center">
+    <div class="container-fluid">
         <div class="row align-items-center">
-            <div class="row">
-                <div class="col">
-                    Coluna 5
-                </div>
+            <div class="row align-items-center">
+                <h1>Music Database Dashboard (detailed view)</h1>
 
-                <div class="col">
-                    Coluna 4
-                </div>
+            </div>
+            <div class="row g-2">
+                {{ div_countries | safe }}
+
+                {{ div_formats | safe }}
             </div>
 
-            <div class="row">
-                <div class="col">
-                    Coluna1
+            <div class="row g-2 align-items-center">
+                <div class="col border-0 mb-3 align-items-left align-items-middle">
+
+                    <div class="list-group">
+
+                        <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">Average duration of releases</h5>
+
+                            </div>
+                            <p class="mb-1">{{results["rel_avg_len"]}} <i>(hh:mm:ss)</i></p>
+                        </a>
+
+                        <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">Average duration of tracks</h5>
+                            </div>
+                            <p class="mb-1">{{results["trx_avg_len"]}} <i>(hh:mm:ss)</i></p>
+                        </a>
+
+                        <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">Longest release</h5>
+                                <small class="text-muted">{{results["long_release_name"]}}
+                                    [{{results["long_release_artist"]}}]</small>
+                            </div>
+                            <p class="mb-1">{{results["long_release_duration"]}} <i>(hh:mm:ss)</i></p>
+                        </a>
+
+                        <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">Shortest release</h5>
+                                <small class="text-muted">{{results["short_release_name"]}}
+                                    [{{results["short_release_artist"]}}]</small>
+                            </div>
+                            <p class="mb-1">{{results["short_release_duration"]}} <i>(hh:mm:ss)</i></p>
+                        </a>
+
+                        <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">Longest track</h5>
+                                <small class="text-muted">{{results["long_track_name"]}}
+                                    [{{results["long_track_artist"]}}]</small>
+                            </div>
+                            <p class="mb-1">{{results["long_track_duration"]}} <i>(hh:mm:ss)</i></p>
+                        </a>
+
+                        <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">Shortest track</h5>
+                                <small class="text-muted">{{results["short_track_name"]}}
+                                    [{{results["short_track_artist"]}}]</small>
+                            </div>
+                            <p class="mb-1">{{results["short_track_duration"]}} <i>(hh:mm:ss)</i></p>
+                        </a>
+
+                    </div>
+
+
                 </div>
-                <div class="col-5">
-                    Coluna2
-                </div>
-                {{ div | safe }}
+
+                <div>Coluna 2</div>
+
+            </div>
+
+            <div class="row g-2">
+                {{ div_releases | safe }}
             </div>
         </div>
     </div>
 
 
-    {{ script | safe }}
-
+    {{ script_countries | safe }}
+    {{ script_releases | safe }}
+    {{ script_formats | safe }}
 
 </body>
 

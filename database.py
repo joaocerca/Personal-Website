@@ -5,21 +5,23 @@ from .addons import dbconnection as dbconnect
 from wtforms.validators import ValidationError
 from pymysql.err import IntegrityError
 import pandas as pd
-# from addons import dbconnection as dbconnect
 from os import getenv
 
 
 database = Blueprint('database', __name__, template_folder="templates")
 
 dbconnect.open_ssh_tunnel()
-dbconnect.mysql_connect()
 
 @database.route("/backend/database/tblartist")
 @login_required
 def db_artist_show():
 
-    # dbconnect.mysql_connect()
-    result = dbconnect.run_query("SELECT * FROM tbl_artist", 0)
+    cnx = dbconnect.mysql_connect()
+
+    result = dbconnect.run_query("SELECT * FROM tbl_artist", 0, cnx)
+    
+    dbconnect.mysql_disconnect(cnx)
+
     return render_template('artists_query.html', list=result)
     
 
@@ -27,8 +29,13 @@ def db_artist_show():
 @database.route("/backend/database/tblrelease")
 @login_required
 def db_release_show():
-    # dbconnect.mysql_connect()
-    result = dbconnect.run_query("SELECT * FROM tbl_release", 0)
+
+    cnx = dbconnect.mysql_connect()
+
+    result = dbconnect.run_query("SELECT * FROM tbl_release", 0, cnx)
+    
+    dbconnect.mysql_disconnect(cnx)
+
     return render_template('releases_query.html', list=result)
    
 
@@ -36,8 +43,12 @@ def db_release_show():
 @login_required
 def db_track_show():
 
-    # dbconnect.mysql_connect()
-    result = dbconnect.run_query("SELECT * FROM tbl_track ORDER BY releaseid ASC", 0)
+    cnx = dbconnect.mysql_connect()
+
+    result = dbconnect.run_query("SELECT * FROM tbl_track ORDER BY releaseid ASC", 0, cnx)
+
+    dbconnect.mysql_disconnect(cnx)
+
     return render_template('tracks_query.html', list=result)
     
 
@@ -48,7 +59,7 @@ def add_artist():
 
     artistForm = ArtistForm()
 
-    dbconnect.mysql_connect()
+    cnx = dbconnect.mysql_connect()
 
     if artistForm.validate_on_submit():
         artistName = artistForm.artistName.data
@@ -57,10 +68,12 @@ def add_artist():
         sql_query = f'INSERT INTO tbl_artist (artistname, artistcountry) VALUES("{artistName}","{artistCountry}")'
 
         try:
-            dbconnect.run_query(sql_query, 1)
+            dbconnect.run_query(sql_query, 1, cnx)
             flash(f'{artistName} added to the DB')
         except IntegrityError:
             flash(f'{artistName} is already in the DB!')
+
+    dbconnect.mysql_disconnect(cnx)
 
     return render_template("add_artist.html", artistForm=artistForm)   
 
@@ -72,7 +85,7 @@ def add_release():
 
     releaseForm = ReleaseForm()
         
-    dbconnect.mysql_connect()
+    cnx = dbconnect.mysql_connect()
     
     if releaseForm.validate_on_submit():
             
@@ -88,11 +101,13 @@ def add_release():
         releaseLength = releaseForm.releaseLength.data
 
         sql_query = f'INSERT INTO tbl_release VALUES ("{releaseName}","{releaseFormat}","{releaseYear}",(SELECT artistid FROM tbl_artist WHERE artistname = "{artistName}"),"{isCompilation}","{releaseDesc}","{recordingType}","{releaseNotes}",CONCAT(releaseformat, LEFT(artistid,4), LEFT(recordingtype,1), FLOOR(1 + (RAND() * 9999)), iscompilation),"{releaseNoTracks}",CONVERT("{releaseLength}", TIME));'
-        dbconnect.run_query(sql_query, 1)
+        dbconnect.run_query(sql_query, 1, cnx)
                     
         flash(f'{releaseName} added to the DB')
 
         return redirect(url_for('database.add_release'))
+    
+    dbconnect.mysql_disconnect(cnx)
     
     return render_template("add_release.html", releaseForm=releaseForm)
 
@@ -103,7 +118,7 @@ def add_track():
 
     trackForm = TrackForm()
 
-    dbconnect.mysql_connect()    
+    cnx = dbconnect.mysql_connect() 
      
     if trackForm.validate_on_submit():
             
@@ -119,14 +134,13 @@ def add_track():
         # 'artists_releases_ids' is a View inside the DB
         sql_query = f'INSERT INTO tbl_track (trackTitle, trackno, tracklength, releaseid) SELECT "{trackTitle}","{trackNo}",CONVERT("{trackLength}", TIME), releaseid FROM artists_releases_ids WHERE releasename = "{releaseName}" AND artistname = "{artistName}";'
                     
-        dbconnect.run_query(sql_query, 1)
+        dbconnect.run_query(sql_query, 1, cnx)
     
         flash(f'{trackTitle} added to the DB')
 
         return redirect(url_for('database.add_track'))
     
+    dbconnect.mysql_disconnect(cnx)
+    
     return render_template("add_track.html", trackForm=trackForm)
 
-
-# dbconnect.mysql_disconnect()
-# dbconnect.close_ssh_tunnel()

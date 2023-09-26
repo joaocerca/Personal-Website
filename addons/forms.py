@@ -17,8 +17,10 @@ class ReleaseForm(FlaskForm):
     releaseName = StringField("Release Name", validators=[InputRequired(), Length(max=60)])
     releaseFormat = SelectField("Release Format", 
                                 choices=[('CD','Compact Disc'),
+                                         ('CD+DVD','Compact Disc + Disc Versatile Disc'),
                                          ('D','Digital'),
                                          ('DVD', 'Digital Versatile Disc'),
+                                         ('EP', 'Extended Play'),
                                          ('K7','Cassette'),
                                          ('SACD', 'Super audio CD'),
                                          ('V','Vinyl')], 
