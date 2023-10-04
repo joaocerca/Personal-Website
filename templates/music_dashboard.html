@@ -22,90 +22,40 @@
     <div class="container-fluid">
         <div class="row align-items-center">
             <div class="row align-items-center">
-                <h1>Music Database Dashboard (detailed view)</h1>
+                <h1>Music database dashboard</h1>
 
             </div>
             <div class="row g-2">
                 {{ div_countries | safe }}
-
-                {{ div_formats | safe }}
+                    
             </div>
 
-            <div class="row g-2 align-items-center">
-                <div class="col border-0 mb-3 align-items-left align-items-middle">
-
-                    <div class="list-group">
-
-                        <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h5 class="mb-1">Average duration of releases</h5>
-
-                            </div>
-                            <p class="mb-1">{{results["rel_avg_len"]}} <i>(hh:mm:ss)</i></p>
-                        </a>
-
-                        <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h5 class="mb-1">Average duration of tracks</h5>
-                            </div>
-                            <p class="mb-1">{{results["trx_avg_len"]}} <i>(hh:mm:ss)</i></p>
-                        </a>
-
-                        <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h5 class="mb-1">Longest release</h5>
-                                <small class="text-muted">{{results["long_release_name"]}}
-                                    [{{results["long_release_artist"]}}]</small>
-                            </div>
-                            <p class="mb-1">{{results["long_release_duration"]}} <i>(hh:mm:ss)</i></p>
-                        </a>
-
-                        <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h5 class="mb-1">Shortest release</h5>
-                                <small class="text-muted">{{results["short_release_name"]}}
-                                    [{{results["short_release_artist"]}}]</small>
-                            </div>
-                            <p class="mb-1">{{results["short_release_duration"]}} <i>(hh:mm:ss)</i></p>
-                        </a>
-
-                        <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h5 class="mb-1">Longest track</h5>
-                                <small class="text-muted">{{results["long_track_name"]}}
-                                    [{{results["long_track_artist"]}}]</small>
-                            </div>
-                            <p class="mb-1">{{results["long_track_duration"]}} <i>(hh:mm:ss)</i></p>
-                        </a>
-
-                        <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h5 class="mb-1">Shortest track</h5>
-                                <small class="text-muted">{{results["short_track_name"]}}
-                                    [{{results["short_track_artist"]}}]</small>
-                            </div>
-                            <p class="mb-1">{{results["short_track_duration"]}} <i>(hh:mm:ss)</i></p>
-                        </a>
-
-                    </div>
-
-
-                </div>
-
-                <div>Coluna 2</div>
-
+            <div class="row align-items-center">
+                {{ div_formats | safe }}
+                {{ div_rel_trx | safe }} 
+                {{ div_genres | safe }}
             </div>
 
             <div class="row g-2">
+                
                 {{ div_releases | safe }}
+            </div>
+
+            <div class="row g-2">
+                {{ div_full_plot | safe }}
+                {{ div_full_table | safe }}
             </div>
         </div>
     </div>
 
 
     {{ script_countries | safe }}
-    {{ script_releases | safe }}
     {{ script_formats | safe }}
+    {{ script_genres | safe }}
+    {{ script_releases | safe }}
+    {{ script_rel_trx | safe }}
+    {{ script_plot_table | safe }}
+
 
 </body>
 
