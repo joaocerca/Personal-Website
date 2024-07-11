@@ -1,8 +1,9 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, PasswordField, BooleanField, FormField, SelectField, SelectMultipleField, IntegerField, DecimalField, DateTimeField
 from wtforms.validators import DataRequired, Length, NumberRange, InputRequired, Optional
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
-from .. import dbase
+from ..init import dbase
 
 
 
@@ -45,13 +46,16 @@ class TrackForm(FlaskForm):
 
 class LoginForm(FlaskForm):
     username = StringField(validators=[InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
-
     password = PasswordField(validators=[InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"})
-
     submit = SubmitField('Login')
 
 class User(dbase.Model, UserMixin):
-    __tablename__ = 'User'
+    __tablename__ = 'user'
     id = dbase.Column(dbase.Integer, primary_key=True) # primary keys are required by SQLAlchemy
     username = dbase.Column(dbase.String(1000))
     password = dbase.Column(dbase.String(100))
+
+    # def set_password(self, password):
+    #     """Create hashed password."""
+    #     self.password = generate_password_hash(password, method='sha256')
+

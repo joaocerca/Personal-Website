@@ -2,7 +2,8 @@ from flask import Blueprint, render_template, redirect, url_for, request, flash
 from flask_login import login_user, login_required, logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
 from .addons.forms import User
-from . import dbase
+from .init import dbase
+from os import environ
 
 auth = Blueprint('auth', __name__)
 
@@ -19,9 +20,7 @@ def login_post():
 
     user = User.query.filter_by(username=username).first()
 
-    print(user.password)
-
-    if not user or not check_password_hash(user.password, password):
+    if not user or not (password == user.password):
         
         flash('Please check your login details and try again.')
         return redirect(url_for('auth.login'))    

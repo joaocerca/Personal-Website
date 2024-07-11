@@ -13,12 +13,10 @@ load_dotenv(path.join(basedir,'.env'))
 FLASK_APP = environ.get("FLASK_APP")
 FLASK_DEBUG = environ.get("FLASK_DEBUG")
 
-print(FLASK_APP)
-
 def create_app():
     app = Flask(__name__)
 
-    app.config['SECRET_KEY'] = 'secret-key-goes-here'
+    app.config['SECRET_KEY'] = environ.get("FLASK_SECRET_KEY")
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users_db.sqlite'
 
     dbase.init_app(app)
@@ -55,7 +53,3 @@ def create_app():
 
 
     return app
-
-
-if __name__ == "__main__":
-    create_app().run()
