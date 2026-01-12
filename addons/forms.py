@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, SelectField, IntegerField
-from wtforms.validators import Length, NumberRange, InputRequired, Optional
+from wtforms import StringField, SubmitField, PasswordField, BooleanField, FormField, SelectField, SelectMultipleField, IntegerField, DecimalField, DateTimeField
+from wtforms.validators import DataRequired, Length, NumberRange, InputRequired, Optional
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from ..init import dbase
 

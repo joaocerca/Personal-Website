@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
 from flask_login import login_user, login_required, logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
-from addons.forms import User
+from .addons.forms import User
 from .init import dbase
 from os import environ
 
