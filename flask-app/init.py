@@ -18,6 +18,8 @@ def create_app():
 
     app.config['SECRET_KEY'] = environ.get("FLASK_SECRET_KEY")
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users_db.sqlite'
+    app.config['PROPAGATE_EXCEPTIONS'] = True
+    app.config['TESTING'] = True
 
     dbase.init_app(app)
 
@@ -51,5 +53,12 @@ def create_app():
     from .dashboards.musicdashboardgen import musicdashboardgen as dashboard_blueprint
     app.register_blueprint(dashboard_blueprint)
 
+    from .discogs import discogs as discogs_blueprint
+    app.register_blueprint(discogs_blueprint)
+
 
     return app
+
+
+if __name__ == "__main__":
+    create_app()
